@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <scrip src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <title>Salud WEB</title>
+</head>
+<body>
+    <!--INICIO ENCABEZADO-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Salud</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/">Calculadora IMC</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/verTablas">Registros</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <!--FIN ENCABEZADO-->
+    <br/>
+    <div class="container">
+        <h4>Calculadora IMC</h4>
+   </div>
+    <!--INICIO FORMULARIO-->
+    <div class="container">
+        <div class="row">
+
+                <!--INICIO FORMULARIO-->
+                    <div class="col-sm-6">
+                    <div class="card border-secondary mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Actualizar registro de datos</h5>
+                            <hr/>
+                            <form  action="/actualizar/<%= data.id %>" method="post" name="f1" id="f1">
+                                <label for="sexo" class="form-label">Sexo</label>
+                                <input type="text" class="form-control" id="sexo" name="sexo" value="<%= data.sexo %>" aria-describedby="emailHelp" required>
+                                <br/>
+                                <label for="edad">Fecha de nacimiento :</label>
+                                <input type="text" class="form-control" id="edad" name="edad" value="<%= data.edad %>" aria-describedby="emailHelp" required>
+                                <br/><br/>
+                                <div class="mb-3">
+                                <label for="peso" class="form-label">Peso (kg)</label>
+                                <input type="text" class="form-control" id="peso" name="peso" value="<%= data.peso %>" aria-describedby="emailHelp" required>
+                                </div>
+                                <div class="mb-3">
+                                <label for="altura" class="form-label">Altura (cm)</label>
+                                <input type="text" class="form-control" id="altura" name="altura" value="<%= data.altura %>" required>
+                                </div>
+                                <button type="submit" onclick="mm()" class="btn btn-primary">Calcular</button>
+                            
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-sm-6">
+                    <div class="card border-secondary mb-3">
+                        <div class="card-body">
+                        <h5 class="card-title">Resultados</h5>
+                        <hr/>
+                        <label>Índice masa corporal (IMC)</label>
+                        <!--<p id="ss"></p>-->
+                        <br/>
+                        <input type="text" name="imc" id="imc" value="<%= data.imc %>">
+                        <br/>
+                        <br/>
+                        <label>Nivel de peso</label>
+                        <!--<p id="ss1"></p>-->
+                        <br/>
+                        <input type="text" name="pesoNivel" id="pesoNivel" value="<%= data.pesoNivel %>">
+                        </div>
+                        <br/>
+                        <div class="container">
+                          <h5>Edad del usuario es : </h5>
+                          <p id="ss2"></p>
+                        </div>
+                    </div>
+                    </div>
+                <!--FIN FORMULARIO-->
+            </form>
+
+        </div>
+    </div>
+    <!--FIN FORMULARIO-->
+   <script>
+        const fechaActual = new Date();
+        const mesActual=fechaActual.getMonth()+1;
+        const diaActual=fechaActual.getDate();
+        const anioActual=fechaActual.getFullYear();
+        const ref=anioActual+"-"+mesActual+"-"+diaActual;
+        function mm(){
+            var peso= document.getElementById('peso').value;
+            var altura= document.getElementById('altura').value;
+            var fecha=document.getElementById('edad').value;
+            var sexo=document.getElementById('sexo').value;
+            var anioNacimiento=parseFloat(fecha.substr(0,4));
+            var mesNacimiento=parseFloat(fecha.substr(5,2));
+            var edadAnios=anioActual-anioNacimiento;
+            var edadMes=((edadAnios*12)+(mesActual-mesNacimiento));
+            console.log(fecha);
+            console.log(ref);
+            console.log(edadAnios);
+            console.log(Math.floor(edadMes));
+            if (peso=="" || altura==""){
+                document.getElementById("ss").innerHTML="";
+            }else{
+                var icm1=10000*parseFloat(peso)/(parseFloat(altura)*parseFloat(altura));
+                document.f1.imc.value = icm1.toFixed(3); 
+                if(icm1<18.5){
+                    //document.getElementById("ss1").innerHTML="Bajo peso";
+                    document.f1.pesoNivel.value = "Bajo peso";    
+                }else if(icm1>18.5 && icm1<=24.9){
+                    //document.getElementById("ss1").innerHTML="Normal";
+                    document.f1.pesoNivel.value = "Normal";   
+                }else if(icm1>25 && icm1<=29.9){
+                    //document.getElementById("ss1").innerHTML="Sobrepeso";
+                    document.f1.pesoNivel.value = "Sobrepeso";   
+                }else if(icm1>30){
+                    //document.getElementById("ss1").innerHTML="Obesidad";
+                    document.f1.pesoNivel.value = "Obesidad";   
+                }
+                //document.getElementById("ss").innerHTML=icm.toFixed(3);
+                document.getElementById("ss2").innerHTML=Math.floor(edadMes/12)+" años " + Math.round((12*((edadMes/12)-Math.floor(edadMes/12))))+" meses";
+               // document.getElementById("ss3").innerHTML=sexo;
+            }
+        }
+   </script>
+</body>
+</html>
